@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
+import 'package:money_record/config/app_color.dart';
 
 void main() {
   runApp(const MainApp());
@@ -11,9 +12,19 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const GetMaterialApp(
+    return GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      home: Scaffold(),
+      theme: ThemeData.light().copyWith(
+          primaryColor: AppColor.primary,
+          colorScheme: const ColorScheme.light(
+            primary: AppColor.primary,
+            secondary: AppColor.secondary,
+          ),
+          appBarTheme: const AppBarTheme(
+            backgroundColor: AppColor.primary,
+            foregroundColor: Colors.white,
+          )),
+      home: const Scaffold(),
     );
   }
 }
