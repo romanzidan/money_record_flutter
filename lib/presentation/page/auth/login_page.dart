@@ -1,7 +1,11 @@
+import 'package:d_info/d_info.dart';
 import 'package:flutter/material.dart';
 import 'package:d_view/d_view.dart';
+import 'package:get/get.dart';
 import 'package:money_record/config/app_asset.dart';
 import 'package:money_record/config/app_color.dart';
+import 'package:money_record/data/source/source_user.dart';
+import 'package:money_record/presentation/page/home_page.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -15,8 +19,22 @@ class _LoginPageState extends State<LoginPage> {
   final controllerPassword = TextEditingController();
   final formKey = GlobalKey<FormState>();
 
-  login() {
-    if (formKey.currentState!.validate()) {}
+  login() async {
+    if (formKey.currentState!.validate()) {
+      bool success =
+          await SourceUser.login(controllerEmail.text, controllerPassword.text);
+      if (success) {
+        DInfo.dialogSuccess('Berhasil Login');
+        DInfo.closeDialog(
+          actionAfterClose: () {
+            Get.off(() => const HomePage());
+          },
+        );
+      } else {
+        DInfo.dialogError('Gagal Login');
+        DInfo.closeDialog();
+      }
+    }
   }
 
   @override
