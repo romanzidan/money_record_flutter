@@ -57,6 +57,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.2.1"
+  d_view:
+    dependency: "direct main"
+    description:
+      name: d_view
+      sha256: "096f0041a4da738cee88801c7cbf11c8db10d3810708cdb2fe068fd48fffadf8"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.3"
   fake_async:
     dependency: transitive
     description:
