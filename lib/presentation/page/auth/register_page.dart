@@ -1,11 +1,9 @@
-import 'package:d_info/d_info.dart';
-import 'package:flutter/material.dart';
 import 'package:d_view/d_view.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:money_record/config/app_asset.dart';
 import 'package:money_record/config/app_color.dart';
 import 'package:money_record/data/source/source_user.dart';
-import 'package:money_record/presentation/page/home_page.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
