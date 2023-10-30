@@ -22,19 +22,11 @@ class _RegisterPageState extends State<RegisterPage> {
 
   register() async {
     if (formKey.currentState!.validate()) {
-      bool success =
-          await SourceUser.login(controllerEmail.text, controllerPassword.text);
-      if (success) {
-        DInfo.dialogSuccess('Berhasil Login');
-        DInfo.closeDialog(
-          actionAfterClose: () {
-            Get.off(() => const HomePage());
-          },
-        );
-      } else {
-        DInfo.dialogError('Gagal Login');
-        DInfo.closeDialog();
-      }
+      await SourceUser.register(
+        controllerName.text,
+        controllerEmail.text,
+        controllerPassword.text,
+      );
     }
   }
 
