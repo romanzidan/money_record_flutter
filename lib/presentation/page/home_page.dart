@@ -116,6 +116,10 @@ class _HomePageState extends State<HomePage> {
                 ],
               ),
             ),
+            const Divider(
+              height: 1,
+              thickness: 1,
+            ),
             ListTile(
               onTap: () {},
               leading: const Icon(Icons.add),
@@ -125,6 +129,7 @@ class _HomePageState extends State<HomePage> {
             ),
             const Divider(
               height: 1,
+              thickness: 1,
             ),
             ListTile(
               onTap: () {},
@@ -135,6 +140,7 @@ class _HomePageState extends State<HomePage> {
             ),
             const Divider(
               height: 1,
+              thickness: 1,
             ),
             ListTile(
               onTap: () {},
@@ -145,6 +151,7 @@ class _HomePageState extends State<HomePage> {
             ),
             const Divider(
               height: 1,
+              thickness: 1,
             ),
             ListTile(
               onTap: () {},
@@ -152,7 +159,11 @@ class _HomePageState extends State<HomePage> {
               title: const Text('Riwayat'),
               horizontalTitleGap: 0,
               trailing: const Icon(Icons.navigate_next),
-            )
+            ),
+            const Divider(
+              height: 1,
+              thickness: 1,
+            ),
           ],
         ),
       ),
