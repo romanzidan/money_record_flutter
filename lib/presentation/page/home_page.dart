@@ -1,9 +1,17 @@
+import 'package:d_chart/commons/axis.dart';
+import 'package:d_chart/commons/config_render.dart';
+import 'package:d_chart/commons/data_model.dart';
+import 'package:d_chart/commons/decorator.dart';
+import 'package:d_chart/ordinal/bar.dart';
+import 'package:d_chart/ordinal/pie.dart';
 import 'package:d_view/d_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:money_record/config/app_asset.dart';
 import 'package:money_record/config/app_color.dart';
+import 'package:money_record/config/session.dart';
 import 'package:money_record/presentation/controller/c_user.dart';
+import 'package:money_record/presentation/page/auth/login_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -14,10 +22,140 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final cUser = Get.put(CUser());
+
+  List<OrdinalData> ordinalList = [
+    OrdinalData(domain: 'Sen', measure: 30),
+    OrdinalData(domain: 'Sel', measure: 15),
+    OrdinalData(domain: 'Rab', measure: 25),
+    OrdinalData(domain: 'Kam', measure: 10),
+    OrdinalData(domain: 'Jum', measure: 5),
+    OrdinalData(domain: 'Sab', measure: 15),
+    OrdinalData(domain: 'Min', measure: 20),
+  ];
+
+  List<OrdinalData> ordinalDataList = [
+    OrdinalData(domain: 'Mon', measure: 6, color: AppColor.primary),
+    OrdinalData(domain: 'Tue', measure: 4, color: AppColor.bg),
+  ];
+
+  late final ordinalGroup = [
+    OrdinalGroup(
+      id: '1',
+      data: ordinalList,
+    ),
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      endDrawer: const Drawer(),
+      endDrawer: Drawer(
+        child: ListView(
+          children: [
+            DrawerHeader(
+              margin: const EdgeInsets.only(bottom: 0),
+              padding: const EdgeInsets.fromLTRB(20, 16, 16, 20),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Image.asset(AppAsset.profile),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Obx(() {
+                              return Text(
+                                cUser.data.name ?? '',
+                                style: const TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              );
+                            }),
+                            Obx(() {
+                              return Text(
+                                cUser.data.email ?? '',
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              );
+                            })
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  Material(
+                    borderRadius: BorderRadius.circular(30),
+                    color: AppColor.primary,
+                    child: InkWell(
+                      onTap: () {
+                        Session.clearUser();
+                        Get.off(() => const LoginPage());
+                      },
+                      borderRadius: BorderRadius.circular(30),
+                      child: const Padding(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 24,
+                          vertical: 8,
+                        ),
+                        child: Text(
+                          'Logout',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                  )
+                ],
+              ),
+            ),
+            ListTile(
+              onTap: () {},
+              leading: const Icon(Icons.add),
+              title: const Text('Tambah Baru'),
+              horizontalTitleGap: 0,
+              trailing: const Icon(Icons.navigate_next),
+            ),
+            const Divider(
+              height: 1,
+            ),
+            ListTile(
+              onTap: () {},
+              leading: const Icon(Icons.south_west),
+              title: const Text('Pemasukan'),
+              horizontalTitleGap: 0,
+              trailing: const Icon(Icons.navigate_next),
+            ),
+            const Divider(
+              height: 1,
+            ),
+            ListTile(
+              onTap: () {},
+              leading: const Icon(Icons.north_east),
+              title: const Text('Pengeluaran'),
+              horizontalTitleGap: 0,
+              trailing: const Icon(Icons.navigate_next),
+            ),
+            const Divider(
+              height: 1,
+            ),
+            ListTile(
+              onTap: () {},
+              leading: const Icon(Icons.history),
+              title: const Text('Riwayat'),
+              horizontalTitleGap: 0,
+              trailing: const Icon(Icons.navigate_next),
+            )
+          ],
+        ),
+      ),
       body: Column(
         children: [
           Padding(
@@ -81,69 +219,185 @@ class _HomePageState extends State<HomePage> {
                       ),
                 ),
                 DView.spaceHeight(),
-                Material(
-                  borderRadius: BorderRadius.circular(16),
-                  elevation: 5,
-                  color: AppColor.primary,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(16, 20, 16, 5),
-                        child: Text(
-                          'Rp 123.000,00',
-                          style: Theme.of(context)
-                              .textTheme
-                              .headlineMedium!
-                              .copyWith(
-                                fontWeight: FontWeight.bold,
-                                color: AppColor.secondary,
-                              ),
-                        ),
-                      ),
-                      const Padding(
-                        padding: EdgeInsets.fromLTRB(16, 0, 16, 25),
-                        child: Text(
-                          '+20% dibanding kemarin',
-                          style: TextStyle(
-                            color: AppColor.bg,
-                            fontSize: 16,
-                          ),
-                        ),
-                      ),
-                      Container(
-                        margin: const EdgeInsets.fromLTRB(16, 0, 0, 16),
-                        padding: const EdgeInsets.symmetric(vertical: 2),
-                        decoration: const BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(8),
-                            bottomLeft: Radius.circular(8),
-                          ),
-                        ),
-                        child: const Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            Text(
-                              'Selengkapnya',
-                              style: TextStyle(
-                                color: AppColor.primary,
-                                fontSize: 16,
-                              ),
-                            ),
-                            Icon(
-                              Icons.navigate_next,
-                              color: AppColor.primary,
-                            ),
-                          ],
-                        ),
-                      )
-                    ],
+                cardToday(context),
+                DView.spaceHeight(30),
+                Center(
+                  child: Container(
+                    height: 5,
+                    width: 80,
+                    decoration: BoxDecoration(
+                      color: AppColor.bg,
+                      borderRadius: BorderRadius.circular(30),
+                    ),
                   ),
-                )
+                ),
+                DView.spaceHeight(30),
+                Text(
+                  'Pengeluaran Minggu Ini',
+                  style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                ),
+                DView.spaceHeight(),
+                weekly(),
+                DView.spaceHeight(30),
+                Text(
+                  'Perbandingan bulan ini',
+                  style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                ),
+                DView.spaceHeight(),
+                monthly(context)
               ],
             ),
           ),
+        ],
+      ),
+    );
+  }
+
+  AspectRatio weekly() {
+    return AspectRatio(
+      aspectRatio: 16 / 9,
+      child: DChartBarO(
+        groupList: ordinalGroup,
+        fillColor: (group, ordinalData, index) {
+          return AppColor.primary;
+        },
+        measureAxis: const MeasureAxis(
+          showLine: true,
+          desiredMinTickCount: 5,
+        ),
+      ),
+    );
+  }
+
+  Row monthly(BuildContext context) {
+    return Row(
+      children: [
+        SizedBox(
+          width: MediaQuery.of(context).size.width * 0.5,
+          height: MediaQuery.of(context).size.width * 0.5,
+          child: Stack(
+            children: [
+              DChartPieO(
+                data: ordinalDataList,
+                configRenderPie: const ConfigRenderPie(arcWidth: 20),
+              ),
+              Center(
+                child: Text(
+                  '60%',
+                  style: Theme.of(context).textTheme.headlineMedium!.copyWith(
+                        color: AppColor.primary,
+                        fontWeight: FontWeight.w500,
+                      ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Container(
+                  height: 16,
+                  width: 16,
+                  color: AppColor.primary,
+                ),
+                DView.spaceWidth(8),
+                const Text('Pemasukan'),
+              ],
+            ),
+            DView.spaceHeight(8),
+            Row(
+              children: [
+                Container(
+                  height: 16,
+                  width: 16,
+                  color: AppColor.bg,
+                ),
+                DView.spaceWidth(8),
+                const Text('Pengeluaran'),
+              ],
+            ),
+            DView.spaceHeight(20),
+            const Text('Pemasukan'),
+            const Text('lebih besar 20%'),
+            const Text('dari pengeluaran'),
+            DView.spaceHeight(10),
+            const Text('Atau setara:'),
+            const Text(
+              'Rp 20.000,00',
+              style: TextStyle(
+                color: AppColor.primary,
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Material cardToday(BuildContext context) {
+    return Material(
+      borderRadius: BorderRadius.circular(16),
+      elevation: 5,
+      color: AppColor.primary,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 20, 16, 5),
+            child: Text(
+              'Rp 123.000,00',
+              style: Theme.of(context).textTheme.headlineMedium!.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: AppColor.secondary,
+                  ),
+            ),
+          ),
+          const Padding(
+            padding: EdgeInsets.fromLTRB(16, 0, 16, 25),
+            child: Text(
+              '+20% dibanding kemarin',
+              style: TextStyle(
+                color: AppColor.bg,
+                fontSize: 16,
+              ),
+            ),
+          ),
+          Container(
+            margin: const EdgeInsets.fromLTRB(16, 0, 0, 16),
+            padding: const EdgeInsets.symmetric(vertical: 2),
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(8),
+                bottomLeft: Radius.circular(8),
+              ),
+            ),
+            child: const Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Text(
+                  'Selengkapnya',
+                  style: TextStyle(
+                    color: AppColor.primary,
+                    fontSize: 16,
+                  ),
+                ),
+                Icon(
+                  Icons.navigate_next,
+                  color: AppColor.primary,
+                ),
+              ],
+            ),
+          )
         ],
       ),
     );
