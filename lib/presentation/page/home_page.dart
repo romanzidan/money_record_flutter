@@ -1,7 +1,6 @@
 import 'package:d_chart/commons/axis.dart';
 import 'package:d_chart/commons/config_render.dart';
 import 'package:d_chart/commons/data_model.dart';
-import 'package:d_chart/commons/decorator.dart';
 import 'package:d_chart/ordinal/bar.dart';
 import 'package:d_chart/ordinal/pie.dart';
 import 'package:d_view/d_view.dart';
