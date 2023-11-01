@@ -12,8 +12,8 @@ class CHome extends GetxController {
     Map data = await SourceHistory.analysis(idUser);
 
     //today outcome
-    _today.value = data['today'];
-    double yesterday = data['yesterday'];
+    _today.value = data['today'].toDouble();
+    double yesterday = data['yesterday'].toDouble();
     double different = (today - yesterday).abs();
     bool isSame = today.isEqual(yesterday);
     bool isPlus = today.isGreaterThan(yesterday);

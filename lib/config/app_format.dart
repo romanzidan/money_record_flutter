@@ -7,4 +7,12 @@ class AppFormat {
     return DateFormat('d MMM yyyy', 'id_ID')
         .format(dateTime); // ex : 25 Des 2023
   }
+
+  static String currency(String number) {
+    return NumberFormat.currency(
+      decimalDigits: 2,
+      locale: 'id_ID',
+      symbol: 'Rp ',
+    ).format(double.parse(number));
+  }
 }
