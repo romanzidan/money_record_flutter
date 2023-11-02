@@ -1,6 +1,7 @@
 import 'package:d_chart/commons/axis.dart';
 import 'package:d_chart/commons/config_render.dart';
 import 'package:d_chart/commons/data_model.dart';
+import 'package:d_chart/commons/style.dart';
 import 'package:d_chart/ordinal/bar.dart';
 import 'package:d_chart/ordinal/pie.dart';
 import 'package:d_view/d_view.dart';
@@ -25,21 +26,19 @@ class _HomePageState extends State<HomePage> {
   final cUser = Get.put(CUser());
   final cHome = Get.put(CHome());
 
+  List<OrdinalData> ordList = [];
+
   @override
   void initState() {
     cHome.getAnalysis(cUser.data.idUser!);
+
+    ordList = List.generate(7, (index) {
+      return OrdinalData(
+          domain: cHome.weekText()[index], measure: cHome.week[index]);
+    });
+
     super.initState();
   }
-
-  List<OrdinalData> ordinalList = [
-    OrdinalData(domain: 'Sen', measure: 30),
-    OrdinalData(domain: 'Sel', measure: 15),
-    OrdinalData(domain: 'Rab', measure: 25),
-    OrdinalData(domain: 'Kam', measure: 10),
-    OrdinalData(domain: 'Jum', measure: 5),
-    OrdinalData(domain: 'Sab', measure: 15),
-    OrdinalData(domain: 'Min', measure: 20),
-  ];
 
   List<OrdinalData> ordinalDataList = [
     OrdinalData(domain: 'Mon', measure: 6, color: AppColor.primary),
@@ -49,7 +48,7 @@ class _HomePageState extends State<HomePage> {
   late final ordinalGroup = [
     OrdinalGroup(
       id: '1',
-      data: ordinalList,
+      data: ordList,
     ),
   ];
 
@@ -286,7 +285,19 @@ class _HomePageState extends State<HomePage> {
         },
         measureAxis: const MeasureAxis(
           showLine: true,
-          desiredMinTickCount: 5,
+          desiredMinTickCount: 2,
+          gapAxisToLabel: 10,
+          lineStyle: LineStyle(
+            color: AppColor.primary,
+            thickness: 2,
+          ),
+        ),
+        domainAxis: const DomainAxis(
+          gapAxisToLabel: 10,
+          lineStyle: LineStyle(
+            color: AppColor.primary,
+            thickness: 2,
+          ),
         ),
       ),
     );
