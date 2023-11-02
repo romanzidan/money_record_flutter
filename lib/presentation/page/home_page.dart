@@ -26,24 +26,41 @@ class _HomePageState extends State<HomePage> {
   final cUser = Get.put(CUser());
   final cHome = Get.put(CHome());
 
-  List<OrdinalData> ordList = [];
+  List<OrdinalData> get ordList => List.generate(7, (index) {
+        return OrdinalData(
+            domain: cHome.weekText()[index], measure: cHome.week[index]);
+      });
 
   @override
   void initState() {
     cHome.getAnalysis(cUser.data.idUser!);
 
-    ordList = List.generate(7, (index) {
-      return OrdinalData(
-          domain: cHome.weekText()[index], measure: cHome.week[index]);
-    });
+    // optional use ordlist
+    // ordList = List.generate(7, (index) {
+    //   return OrdinalData(
+    //       domain: cHome.weekText()[index], measure: cHome.week[index]);
+    // });
 
     super.initState();
   }
 
-  List<OrdinalData> ordinalDataList = [
-    OrdinalData(domain: 'Mon', measure: 6, color: AppColor.primary),
-    OrdinalData(domain: 'Tue', measure: 4, color: AppColor.bg),
-  ];
+  List<OrdinalData> get ordinalDataList => [
+        OrdinalData(
+            domain: 'income',
+            measure: cHome.monthIncome,
+            color: AppColor.primary),
+        OrdinalData(
+          domain: 'outcome',
+          measure: cHome.monthOutcome,
+          color: AppColor.bg,
+        ),
+        if (cHome.monthIncome == 0 && cHome.monthOutcome == 0)
+          OrdinalData(
+            domain: 'nol',
+            measure: 1,
+            color: AppColor.bg.withOpacity(0.5),
+          )
+      ];
 
   late final ordinalGroup = [
     OrdinalGroup(
@@ -316,13 +333,15 @@ class _HomePageState extends State<HomePage> {
                 configRenderPie: const ConfigRenderPie(arcWidth: 20),
               ),
               Center(
-                child: Text(
-                  '60%',
-                  style: Theme.of(context).textTheme.headlineMedium!.copyWith(
-                        color: AppColor.primary,
-                        fontWeight: FontWeight.w500,
-                      ),
-                ),
+                child: Obx(() {
+                  return Text(
+                    '${cHome.percentIncome}%',
+                    style: Theme.of(context).textTheme.headlineMedium!.copyWith(
+                          color: AppColor.primary,
+                          fontWeight: FontWeight.w500,
+                        ),
+                  );
+                }),
               ),
             ],
           ),
@@ -354,19 +373,21 @@ class _HomePageState extends State<HomePage> {
               ],
             ),
             DView.spaceHeight(20),
-            const Text('Pemasukan'),
-            const Text('lebih besar 20%'),
-            const Text('dari pengeluaran'),
+            Obx(() {
+              return Text(cHome.monthPercent);
+            }),
             DView.spaceHeight(10),
             const Text('Atau setara:'),
-            const Text(
-              'Rp 20.000,00',
-              style: TextStyle(
-                color: AppColor.primary,
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
+            Obx(() {
+              return Text(
+                AppFormat.currency(cHome.differentMonth.toString()),
+                style: const TextStyle(
+                  color: AppColor.primary,
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              );
+            }),
           ],
         ),
       ],
