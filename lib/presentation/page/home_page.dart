@@ -27,21 +27,9 @@ class _HomePageState extends State<HomePage> {
   final cUser = Get.put(CUser());
   final cHome = Get.put(CHome());
 
-  List<OrdinalData> get ordList => List.generate(7, (index) {
-        return OrdinalData(
-            domain: cHome.weekText()[index], measure: cHome.week[index]);
-      });
-
   @override
   void initState() {
     cHome.getAnalysis(cUser.data.idUser!);
-
-    // optional use ordlist
-    // ordList = List.generate(7, (index) {
-    //   return OrdinalData(
-    //       domain: cHome.weekText()[index], measure: cHome.week[index]);
-    // });
-
     super.initState();
   }
 
@@ -63,12 +51,10 @@ class _HomePageState extends State<HomePage> {
           )
       ];
 
-  late final ordinalGroup = [
-    OrdinalGroup(
-      id: '1',
-      data: ordList,
-    ),
-  ];
+  List<OrdinalData> get ordList => List.generate(7, (index) {
+        return OrdinalData(
+            domain: cHome.weekText()[index], measure: cHome.week[index]);
+      });
 
   @override
   Widget build(BuildContext context) {
@@ -127,47 +113,52 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
           Expanded(
-            child: ListView(
-              padding: const EdgeInsets.fromLTRB(20, 0, 20, 30),
-              children: [
-                Text(
-                  'Pengeluaran Hari Ini',
-                  style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                        fontWeight: FontWeight.bold,
+            child: RefreshIndicator(
+              onRefresh: () async {
+                cHome.getAnalysis(cUser.data.idUser!);
+              },
+              child: ListView(
+                padding: const EdgeInsets.fromLTRB(20, 0, 20, 30),
+                children: [
+                  Text(
+                    'Pengeluaran Hari Ini',
+                    style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
+                  ),
+                  DView.spaceHeight(),
+                  cardToday(context),
+                  DView.spaceHeight(30),
+                  Center(
+                    child: Container(
+                      height: 5,
+                      width: 80,
+                      decoration: BoxDecoration(
+                        color: AppColor.bg,
+                        borderRadius: BorderRadius.circular(30),
                       ),
-                ),
-                DView.spaceHeight(),
-                cardToday(context),
-                DView.spaceHeight(30),
-                Center(
-                  child: Container(
-                    height: 5,
-                    width: 80,
-                    decoration: BoxDecoration(
-                      color: AppColor.bg,
-                      borderRadius: BorderRadius.circular(30),
                     ),
                   ),
-                ),
-                DView.spaceHeight(30),
-                Text(
-                  'Pengeluaran Minggu Ini',
-                  style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
-                ),
-                DView.spaceHeight(),
-                weekly(),
-                DView.spaceHeight(30),
-                Text(
-                  'Perbandingan bulan ini',
-                  style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
-                ),
-                DView.spaceHeight(),
-                monthly(context)
-              ],
+                  DView.spaceHeight(30),
+                  Text(
+                    'Pengeluaran Minggu Ini',
+                    style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
+                  ),
+                  DView.spaceHeight(),
+                  weekly(),
+                  DView.spaceHeight(30),
+                  Text(
+                    'Perbandingan bulan ini',
+                    style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
+                  ),
+                  DView.spaceHeight(),
+                  monthly(context)
+                ],
+              ),
             ),
           ),
         ],
@@ -250,7 +241,7 @@ class _HomePageState extends State<HomePage> {
           ),
           ListTile(
             onTap: () {
-              Get.to(() => const AddHistoryPage())?.then((value) {
+              Get.to(() => AddHistoryPage())?.then((value) {
                 //cek jika ada perubahan pada add history page
                 //maka refresh analysis pada home page
                 if (value ?? false) {
@@ -308,28 +299,36 @@ class _HomePageState extends State<HomePage> {
   AspectRatio weekly() {
     return AspectRatio(
       aspectRatio: 16 / 9,
-      child: DChartBarO(
-        groupList: ordinalGroup,
-        fillColor: (group, ordinalData, index) {
-          return AppColor.primary;
-        },
-        measureAxis: const MeasureAxis(
-          showLine: true,
-          desiredMinTickCount: 2,
-          gapAxisToLabel: 10,
-          lineStyle: LineStyle(
-            color: AppColor.primary,
-            thickness: 2,
+      child: Obx(() {
+        return DChartBarO(
+          groupList: [
+            OrdinalGroup(
+              id: '1',
+              data: ordList,
+            ),
+          ],
+          fillColor: (group, ordinalData, index) {
+            return AppColor.primary;
+          },
+          animate: true,
+          measureAxis: const MeasureAxis(
+            showLine: true,
+            desiredMinTickCount: 2,
+            gapAxisToLabel: 10,
+            lineStyle: LineStyle(
+              color: AppColor.primary,
+              thickness: 2,
+            ),
           ),
-        ),
-        domainAxis: const DomainAxis(
-          gapAxisToLabel: 10,
-          lineStyle: LineStyle(
-            color: AppColor.primary,
-            thickness: 2,
+          domainAxis: const DomainAxis(
+            gapAxisToLabel: 10,
+            lineStyle: LineStyle(
+              color: AppColor.primary,
+              thickness: 2,
+            ),
           ),
-        ),
-      ),
+        );
+      }),
     );
   }
 
@@ -341,10 +340,13 @@ class _HomePageState extends State<HomePage> {
           height: MediaQuery.of(context).size.width * 0.5,
           child: Stack(
             children: [
-              DChartPieO(
-                data: ordinalDataList,
-                configRenderPie: const ConfigRenderPie(arcWidth: 20),
-              ),
+              Obx(() {
+                return DChartPieO(
+                  data: ordinalDataList,
+                  animate: true,
+                  configRenderPie: const ConfigRenderPie(arcWidth: 20),
+                );
+              }),
               Center(
                 child: Obx(() {
                   return Text(
