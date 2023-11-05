@@ -93,4 +93,53 @@ class SourceHistory {
 
     return [];
   }
+
+  static Future<History?> whereDate(
+      String idUser, String date, String type) async {
+    String url = '${Api.history}/where_date.php';
+    Map? responseBody = await AppRequest.post(url, {
+      'id_user': idUser,
+      'date': date,
+      'type': type,
+    });
+
+    if (responseBody == null) return null;
+
+    if (responseBody['success']) {
+      var e = responseBody['data'];
+      return History.fromJson(e);
+    }
+
+    return null;
+  }
+
+  static Future<bool> update(String idHistory, String idUser, String type,
+      String date, String total, String details) async {
+    String url = '${Api.history}/update.php';
+    Map? responseBody = await AppRequest.post(url, {
+      'id_history': idHistory,
+      'id_user': idUser,
+      'date': date,
+      'type': type,
+      'details': details,
+      'total': total,
+      'updated_at': DateTime.now().toIso8601String(),
+    });
+
+    if (responseBody == null) return false;
+
+    if (responseBody['success']) {
+      DInfo.dialogSuccess('Berhasil Update History');
+      DInfo.closeDialog();
+    } else {
+      if (responseBody['message'] == 'date') {
+        DInfo.dialogError('Tanggal History ada yang bentrok');
+      } else {
+        DInfo.dialogError('Gagal Update History');
+      }
+      DInfo.closeDialog();
+    }
+
+    return responseBody['success'];
+  }
 }
