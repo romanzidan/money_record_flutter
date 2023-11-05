@@ -1,3 +1,4 @@
+import 'package:d_info/d_info.dart';
 import 'package:d_view/d_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -5,6 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:money_record/config/app_color.dart';
 import 'package:money_record/config/app_format.dart';
 import 'package:money_record/data/model/history.dart';
+import 'package:money_record/data/source/source_history.dart';
 import 'package:money_record/presentation/controller/c_user.dart';
 import 'package:money_record/presentation/controller/history/c_income_outcome.dart';
 import 'package:money_record/presentation/page/history/update_history_page.dart';
@@ -30,7 +32,7 @@ class _IncomeOutcomePageState extends State<IncomeOutcomePage> {
     cInOut.getList(cUser.data.idUser, widget.type);
   }
 
-  menuOption(String value, History history) {
+  menuOption(String value, History history) async {
     if (value == 'update') {
       Get.to(() => UpdateHistoryPage(
             date: history.date!,
@@ -41,7 +43,19 @@ class _IncomeOutcomePageState extends State<IncomeOutcomePage> {
           refresh();
         }
       });
-    } else if (value == 'delete') {}
+    } else if (value == 'delete') {
+      bool? confirm = await DInfo.dialogConfirmation(
+        context,
+        'title',
+        'Yakin menghapus history ini?',
+        textNo: 'Batal',
+        textYes: 'Ya',
+      );
+      if (confirm!) {
+        bool success = await SourceHistory.delete(history.idHistory!);
+        if (success) refresh();
+      }
+    }
   }
 
   @override
